@@ -1,0 +1,90 @@
+local gameIdToCheck = 6428116890
+
+local function checkGameId()
+    local currentGameId = tonumber(game.PlaceId)
+    return currentGameId == gameIdToCheck
+end
+
+if checkGameId() then
+    local introText = "Planet Clicker 🌎"
+    local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/ionlyusegithubformcmods/1-Line-Scripts/main/Mobile%20Friendly%20Orion')))()
+    local Window = OrionLib:MakeWindow({
+        Name = "Planet Clicker🌎",
+        HidePremium = false,
+        SaveConfig = true,
+        ConfigFolder = "OrionTest",
+        IntroEnabled = true,
+        IntroText = introText,
+        Icon = "rbxassetid://4483345998"
+    })
+
+    local Tab = Window:MakeTab({
+        Name = "Tab 1",
+        Icon = "rbxassetid://4483345998",
+        PremiumOnly = false
+    })
+
+    local autoClickToggle = false
+    local autoBuyFactoryToggle = false
+    local autoRebirthToggle = false
+    local randomBuyUpgradeToggle = false
+    local clickSpeed = 0.00000000000000001
+
+    Tab:AddToggle({
+        Name = "Auto Click",
+        Default = false,
+        Callback = function(Value)
+            autoClickToggle = Value
+        end    
+    })
+
+    Tab:AddToggle({
+        Name = "Auto Buy Factory",
+        Default = false,
+        Callback = function(Value)
+            autoBuyFactoryToggle = Value
+        end    
+    })
+
+    Tab:AddToggle({
+        Name = "Auto Rebirth",
+        Default = false,
+        Callback = function(Value)
+            autoRebirthToggle = Value
+        end    
+    })
+
+    Tab:AddToggle({
+        Name = "Random Buy Upgrade",
+        Default = false,
+        Callback = function(Value)
+            randomBuyUpgradeToggle = Value
+        end    
+    })
+
+    Tab:AddLabel("Auto Rebirth requires 50k planets.")
+
+    while wait() do
+        if autoClickToggle then
+            game:GetService("ReplicatedStorage").ClickedButton:FireServer()
+            wait(clickSpeed)
+        end
+
+        if autoBuyFactoryToggle then
+            game:GetService("ReplicatedStorage").Upgrade:InvokeServer(game:GetService("Players").LocalPlayer.PlayerGui.UpgradesGui.Frame.ScrollingFrame.Upgrade01, 6, 1)
+        end
+
+        if autoRebirthToggle then
+            if game.Players.LocalPlayer.leaderstats.Planets.Value >= 50000 then
+                game:GetService("ReplicatedStorage").Rebirth:FireServer()
+            end
+        end
+
+        if randomBuyUpgradeToggle then
+            local upgradeID = math.random(1, 10)
+            game:GetService("ReplicatedStorage").Upgrade:InvokeServer(game:GetService("Players").LocalPlayer.PlayerGui.UpgradesGui.Frame.ScrollingFrame["Upgrade0" .. upgradeID], 6, 1)
+        end
+    end
+else
+    game.Players.LocalPlayer:Kick("Join Planet Clicker to use the script.")
+end
